@@ -1,24 +1,32 @@
-﻿using ConsoleApp1.Database;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 
-namespace ConsoleApp1.Models
+namespace Consoleapp1
 {
     public class Program
     {
         static void Main(string[] args)
         {
-            GestorBaseDeDatos gestorBaseDeDatos = new GestorBaseDeDatos();
+            string connectionString = @"Server=localhost\SQLEXPRESS;Database=SistemaLogistica;Trusted_Connection=True;";
 
-            try 
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                // if(gestorBaseDeDatos.DeleteUser(10))
-                //{
-                //  Console.WriteLine("usuario eliminado");
-                //}
-                Usuario newUser = new Usuario("Jonathan", "Rodriguez", "jona22", "123456789", "jonaro@gmail.com");
-            }catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
+                connection.Open();
+                string query = "SELECT * FROM Usuario";
+                using (SqlCommand comando = new SqlCommand(query,connection))
+                {
+                    using (SqlDataReader dataReader = comando.ExecuteReader())
+                    { 
+                        if (dataReader.HasRows)
+                        {
+                            while (dataReader.Read())
+                            {
+                                    var dato = dataReader.GetString(1);
+                                Console.WriteLine(dato);    
+                                }
+                            }
+                        }
+                }
+                connection.Close();
             }
         }
     }
